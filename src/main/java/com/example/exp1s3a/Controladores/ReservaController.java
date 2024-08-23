@@ -7,54 +7,68 @@ import java.time.LocalDate;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.exp1s3a.Modelos.Hotel;
 import com.example.exp1s3a.Modelos.Reserva;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 public class ReservaController {
-    private HashMap<Integer, List<Reserva>> diccionarioReservas = new HashMap<Integer, List<Reserva>>();
+    private HashMap<Integer, Hotel> diccionarioHoteles = new HashMap<Integer, Hotel>();
+    private HashMap<Integer, List<Reserva>> diccionarioReservasHotel1 = new HashMap<Integer, List<Reserva>>();
+    private HashMap<Integer, List<Reserva>> diccionarioReservasHotel2 = new HashMap<Integer, List<Reserva>>();
 
     ReservaController() {
-        List<Reserva> reservasHabitacion1 = new ArrayList<Reserva>();
-        List<Reserva> reservasHabitacion2 = new ArrayList<Reserva>();
-        List<Reserva> reservasHabitacion3 = new ArrayList<Reserva>();
+        Hotel hotel1 = new Hotel();
+        Hotel hotel2 = new Hotel();
+        List<Reserva> reservasHotel1Habitacion1 = new ArrayList<Reserva>();
+        List<Reserva> reservasHotel1Habitacion2 = new ArrayList<Reserva>();
+        List<Reserva> reservasHotel2Habitacion1 = new ArrayList<Reserva>();
+        List<Reserva> reservasHotel2Habitacion2 = new ArrayList<Reserva>();
 
         // Datos: 10 (mínimo 8 según rúbrica)
-        reservasHabitacion1.add(new Reserva(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 2)));
-        reservasHabitacion1.add(new Reserva(LocalDate.of(2024, 1, 2), LocalDate.of(2024, 1, 3)));
-        reservasHabitacion1.add(new Reserva(LocalDate.of(2024, 1, 5), LocalDate.of(2024, 1, 6)));
-        reservasHabitacion1.add(new Reserva(LocalDate.of(2024, 1, 8), LocalDate.of(2024, 1, 10)));
+        // Hotel 1
+        reservasHotel1Habitacion1.add(new Reserva(LocalDate.of(2024, 1, 1), LocalDate.of(2024, 1, 7)));
+        reservasHotel1Habitacion1.add(new Reserva(LocalDate.of(2024, 1, 8), LocalDate.of(2024, 1, 10)));
 
-        reservasHabitacion2.add(new Reserva(LocalDate.of(2024, 2, 1), LocalDate.of(2024, 1, 2)));
-        reservasHabitacion2.add(new Reserva(LocalDate.of(2024, 2, 2), LocalDate.of(2024, 1, 3)));
-        reservasHabitacion2.add(new Reserva(LocalDate.of(2024, 2, 5), LocalDate.of(2024, 1, 6)));
+        reservasHotel1Habitacion2.add(new Reserva(LocalDate.of(2024, 2, 1), LocalDate.of(2024, 1, 2)));
+        reservasHotel1Habitacion2.add(new Reserva(LocalDate.of(2024, 2, 2), LocalDate.of(2024, 1, 3)));
+        reservasHotel1Habitacion2.add(new Reserva(LocalDate.of(2024, 2, 5), LocalDate.of(2024, 1, 6)));
 
-        reservasHabitacion3.add(new Reserva(LocalDate.of(2024, 3, 1), LocalDate.of(2024, 1, 2)));
-        reservasHabitacion3.add(new Reserva(LocalDate.of(2024, 3, 2), LocalDate.of(2024, 1, 3)));
-        reservasHabitacion3.add(new Reserva(LocalDate.of(2024, 3, 5), LocalDate.of(2024, 1, 6)));
+        // Hotel 2
+        reservasHotel2Habitacion1.add(new Reserva(LocalDate.of(2024, 3, 1), LocalDate.of(2024, 1, 2)));
+        reservasHotel2Habitacion1.add(new Reserva(LocalDate.of(2024, 3, 2), LocalDate.of(2024, 1, 3)));
+        reservasHotel2Habitacion1.add(new Reserva(LocalDate.of(2024, 3, 5), LocalDate.of(2024, 1, 6)));
 
-        diccionarioReservas.put(1, reservasHabitacion1);
-        diccionarioReservas.put(2, reservasHabitacion2);
-        diccionarioReservas.put(3, reservasHabitacion3);
+        reservasHotel2Habitacion2.add(new Reserva(LocalDate.of(2024, 3, 1), LocalDate.of(2024, 1, 2)));
+        reservasHotel2Habitacion2.add(new Reserva(LocalDate.of(2024, 3, 2), LocalDate.of(2024, 1, 3)));
+        reservasHotel2Habitacion2.add(new Reserva(LocalDate.of(2024, 3, 5), LocalDate.of(2024, 1, 6)));
+
+        diccionarioReservasHotel1.put(1, reservasHotel1Habitacion1);
+        diccionarioReservasHotel1.put(2, reservasHotel1Habitacion2);
+        diccionarioReservasHotel2.put(1, reservasHotel2Habitacion1);
+        diccionarioReservasHotel2.put(2, reservasHotel2Habitacion2);
+
+        hotel1.setReservas(diccionarioReservasHotel1);
+        hotel2.setReservas(diccionarioReservasHotel2);
+
+        diccionarioHoteles.put(1, hotel1);
+        diccionarioHoteles.put(2, hotel2);
     }
 
-    // Devuelve todas las reservas
-    @GetMapping("/reservas")
-    public HashMap<Integer, List<Reserva>> getReservas() {
-        return diccionarioReservas;
+    @GetMapping("/reservas/{hotelId}")
+    public HashMap<Integer, List<Reserva>> getReservasHotel(@PathVariable int hotelId) {
+        return diccionarioHoteles.get(hotelId).getReservas();
     }
 
-    // Ejemplo: /reservas/1
-    @GetMapping("/reservas/{numeroHabitacion}")
-    public List<Reserva> getReservasHabitacion(@PathVariable int numeroHabitacion) {
-        return diccionarioReservas.get(numeroHabitacion);
+    @GetMapping("/reservas/{hotelId}/{numeroHabitacion}")
+    public List<Reserva> getReservasHotelHabitacion(@PathVariable int hotelId, @PathVariable int numeroHabitacion) {
+        return diccionarioHoteles.get(hotelId).getReservas().get(numeroHabitacion);
     }
 
-    // Ejemplo: /disponibilidad/1/2024-01-01/2024-01-10
-    @GetMapping("/disponibilidad/{numeroHabitacion}/{fechaInicial}/{fechaFinal}")
-    public List<LocalDate> getDisponibilidad(@PathVariable int numeroHabitacion, @PathVariable LocalDate fechaInicial, @PathVariable LocalDate fechaFinal) {
-        List<Reserva> reservas = diccionarioReservas.get(numeroHabitacion);
+    @GetMapping("/disponibilidad/{hotelId}/{numeroHabitacion}/{fechaInicial}/{fechaFinal}")
+    public List<LocalDate> getDisponibilidad(@PathVariable int hotelId, @PathVariable int numeroHabitacion, @PathVariable LocalDate fechaInicial, @PathVariable LocalDate fechaFinal) {
+        List<Reserva> reservas = diccionarioHoteles.get(hotelId).getReservas().get(numeroHabitacion);
         List<LocalDate> disponibilidad = new ArrayList<LocalDate>();
 
         for (LocalDate fecha = fechaInicial; !fecha.isAfter(fechaFinal); fecha = fecha.plusDays(1)) {
