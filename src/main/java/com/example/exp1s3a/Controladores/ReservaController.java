@@ -39,9 +39,15 @@ public class ReservaController {
         diccionarioReservas.put(3, reservasHabitacion3);
     }
 
+    // Devuelve todas las reservas
+    @GetMapping("/reservas")
+    public HashMap<Integer, List<Reserva>> getReservas(@PathVariable int numeroHabitacion) {
+        return diccionarioReservas;
+    }
+
     // Ejemplo: /reservas/1
     @GetMapping("/reservas/{numeroHabitacion}")
-    public List<Reserva> getReservas(@PathVariable int numeroHabitacion) {
+    public List<Reserva> getReservasHabitacion(@PathVariable int numeroHabitacion) {
         return diccionarioReservas.get(numeroHabitacion);
     }
 
@@ -55,7 +61,7 @@ public class ReservaController {
             boolean disponible = true;
             for (Reserva reserva : reservas) {
                 if ((fecha.isEqual(reserva.getFechaCheckIn()) || fecha.isAfter(reserva.getFechaCheckIn())) &&
-                    (fecha.isEqual(reserva.getFechaCheckOut()) || fecha.isBefore(reserva.getFechaCheckOut()))) {
+                    fecha.isBefore(reserva.getFechaCheckOut())) {
                     disponible = false;
                     break;
                 }
