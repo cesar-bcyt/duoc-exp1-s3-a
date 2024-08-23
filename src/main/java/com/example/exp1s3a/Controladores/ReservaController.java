@@ -7,14 +7,12 @@ import java.time.LocalDate;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.exp1s3a.Modelos.Hotel;
 import com.example.exp1s3a.Modelos.Reserva;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 public class ReservaController {
-    private Hotel hotel = new Hotel();
     private HashMap<Integer, List<Reserva>> diccionarioReservas = new HashMap<Integer, List<Reserva>>();
 
     ReservaController() {
@@ -39,20 +37,18 @@ public class ReservaController {
         diccionarioReservas.put(1, reservasHabitacion1);
         diccionarioReservas.put(2, reservasHabitacion2);
         diccionarioReservas.put(3, reservasHabitacion3);
-
-        hotel.setReservas(diccionarioReservas);
     }
 
     // Ejemplo: /reservas/1
     @GetMapping("/reservas/{numeroHabitacion}")
     public List<Reserva> getReservas(@PathVariable int numeroHabitacion) {
-        return hotel.getReservas().get(numeroHabitacion);
+        return diccionarioReservas.get(numeroHabitacion);
     }
 
     // Ejemplo: /disponibilidad/1/2024-01-01/2024-01-10
     @GetMapping("/disponibilidad/{numeroHabitacion}/{fechaInicial}/{fechaFinal}")
     public List<LocalDate> getDisponibilidad(@PathVariable int numeroHabitacion, @PathVariable LocalDate fechaInicial, @PathVariable LocalDate fechaFinal) {
-        List<Reserva> reservas = hotel.getReservas().get(numeroHabitacion);
+        List<Reserva> reservas = diccionarioReservas.get(numeroHabitacion);
         List<LocalDate> disponibilidad = new ArrayList<LocalDate>();
 
         for (LocalDate fecha = fechaInicial; !fecha.isAfter(fechaFinal); fecha = fecha.plusDays(1)) {
