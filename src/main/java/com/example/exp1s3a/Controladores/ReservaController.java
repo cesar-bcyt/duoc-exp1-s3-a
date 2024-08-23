@@ -41,7 +41,7 @@ public class ReservaController {
 
     // Devuelve todas las reservas
     @GetMapping("/reservas")
-    public HashMap<Integer, List<Reserva>> getReservas(@PathVariable int numeroHabitacion) {
+    public HashMap<Integer, List<Reserva>> getReservas() {
         return diccionarioReservas;
     }
 
